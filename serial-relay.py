@@ -4,10 +4,14 @@ import time
 import serial
 import argparse
 
-relayopen = [0xA0, 0x01, 0x01, 0xA2]
-relayclose = [0xA0, 0x01, 0x00, 0xA1]
-
 baudrate = 9600
+
+def relay_write(channel, state):
+    command = 0xA0
+    check = command + channel + state
+    message = [command, channel, state, check]
+
+    ser.write(message)
 
 parser = argparse.ArgumentParser()
 parser.add_argument("port", help="The port the relay is connected to")
@@ -23,9 +27,9 @@ operation = args.operation.lower()
 ser = serial.Serial(port, baudrate, timeout=1)
 
 if operation == "open":
-    ser.write(relayopen)
+    relay_write(1, 1)
 elif operation == "close":
-    ser.write(relayclose)
+    relay_write(1, 0)
 elif operation == "status":
     print("Not implemented")   
 else:
