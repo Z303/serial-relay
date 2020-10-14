@@ -4,12 +4,14 @@ import time
 import serial
 import argparse
 
-relayon = [0xA0, 0x01, 0x01, 0xA2]
-relaync = [0xA0, 0x01, 0x00, 0xA1]
+relayopen = [0xA0, 0x01, 0x01, 0xA2]
+relayclose = [0xA0, 0x01, 0x00, 0xA1]
+
+baudrate = 9600
 
 parser = argparse.ArgumentParser()
 parser.add_argument("port", help="The port the relay is connected to")
-parser.add_argument("operation", help="Which operation to execute, NC, NO or status")
+parser.add_argument("operation", help="Which operation to execute: open, close or status")
 parser.parse_args()
 
 args = parser.parse_args()
@@ -18,12 +20,12 @@ args = parser.parse_args()
 port = args.port.lower()
 operation = args.operation.lower()
 
-ser = serial.Serial(port, 9600, timeout=1)
+ser = serial.Serial(port, baudrate, timeout=1)
 
-if operation == "no":
-    ser.write(relayon)
-elif operation == "nc":
-    ser.write(relaync)
+if operation == "open":
+    ser.write(relayopen)
+elif operation == "close":
+    ser.write(relayclose)
 elif operation == "status":
     print("Not implemented")   
 else:
